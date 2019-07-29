@@ -1,0 +1,8 @@
+
+Grader output
+three_block_piece: Should have exactly one three-block piece in All_My_Pieces. [incorrect answer]
+cheat_allowed_at_100: Should have cheated, score at 100. Score was not subtracted. [incorrect answer] [fixed]
+cheat_piece_well_formed: The cheat piece should be a 3-deep nested array. [incorrect answer][fixed]
+cheats_once: Cheating should work when score is sufficient. Next piece was not cheat piece. [incorrect answer]
+cheat_idempotent: Pressing the cheat key multiple times during a single piece drop should not behave differently than pressing it just once. Score was not decreased by cheat cost only once. [incorrect answer]
+consecutive_cheats: Cheating consecutive times should work. Next piece was not cheat piece. [incorrect answer]
