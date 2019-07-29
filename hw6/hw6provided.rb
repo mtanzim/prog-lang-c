@@ -77,6 +77,7 @@ class Piece
   end
   
   # class array holding all the pieces and their rotations
+  # introduced a bug in store current
   All_Pieces = [[[[0, 0], [1, 0], [0, 1], [1, 1]]],  # square (only needs one)
                rotations([[0, 0], [-1, 0], [1, 0], [0, -1]]), # T
                [[[0, 0], [-1, 0], [1, 0], [2, 0]], # long (only needs two)

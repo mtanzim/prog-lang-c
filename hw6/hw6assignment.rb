@@ -15,7 +15,7 @@ class MyPiece < Piece
     rotations([[0, 0], [-1, 0], [0, -1], [1, -1]]), # S
     rotations([[0, 0], [1, 0], [0, -1], [-1, -1]]),
     rotations([[0, 0], [1, 0], [0, 1], [1, 1], [0,2] ]), #cube +1
-    rotations([[0, 0], [1, 0], [0, 1]]), # cube -1 
+    rotations([[0, 0],[0, 0], [1, 0], [0, 1]]), # cube -1, not allowed to have only 3 coordinates?
     rotations([[0, 0], [-1, 0], [1, 0], [2, 0],[-2,0]]) #long +1
   ] # Z
   # your enhancements here
