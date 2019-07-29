@@ -15,14 +15,20 @@ class MyPiece < Piece
     rotations([[0, 0], [-1, 0], [0, -1], [1, -1]]), # S
     rotations([[0, 0], [1, 0], [0, -1], [-1, -1]]),
     rotations([[0, 0], [1, 0], [0, 1], [1, 1], [0,2] ]), #cube +1
-    rotations([[0, 0],[0, 0], [1, 0], [0, 1]]), # cube -1, not allowed to have only 3 coordinates?
-    rotations([[0, 0], [-1, 0], [1, 0], [2, 0],[-2,0]]) #long +1
+    rotations([[0, 0], [-1, 0], [1, 0], [2, 0],[-2,0]]), #long +1,
+    rotations([[0, 0], [1, 0], [0, 1]]) # cube -1, not allowed to have only 3 coordinates?
+    # [[[0, 0]]] # test cheat_piece
   ] # Z
 
-  CheatPiece = [[[[0, 0], [0, 0], [0, 0], [0, 0]]]] # cheat piece
+  CheatPiece = [[[[0, 0]]]] # cheat piece
   # your enhancements here
   def initialize(point_array, board)
       super(point_array, board)
+      @block_len = point_array.length
+  end
+
+  def get_len
+    @block_len
   end
 
   def self.next_piece (board)
@@ -31,6 +37,7 @@ class MyPiece < Piece
   def self.cheat_piece (board)
       MyPiece.new(CheatPiece.sample, board)
   end
+
 
 end
 
@@ -57,6 +64,20 @@ class MyBoard < Board
       @current_pos = nil
       @is_cheat = false
 
+  end
+
+  def store_current
+    locations = @current_block.current_rotation
+    displacement = @current_block.position
+    block_len = locations.length
+    block_len -= 1 
+    (0..block_len).each{|index| 
+      current = locations[index];
+      @grid[current[1]+displacement[1]][current[0]+displacement[0]] = 
+      @current_pos[index]
+    }
+    remove_filled
+    @delay = [@delay - 2, 80].max
   end
 
 end
