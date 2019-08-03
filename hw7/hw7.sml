@@ -36,6 +36,7 @@ fun real_close (r1,r2) =
 fun real_close_point (x1,y1) (x2,y2) = 
     real_close(x1,x2) andalso real_close(y1,y2)
 
+
 (* helper function to return the Line or VerticalLine containing 
    points (x1,y1) and (x2,y2). Actually used only when intersecting 
    line segments, but might be generally useful *)
@@ -198,3 +199,21 @@ fun eval_prog (e,env) =
 (* CHANGE: Add a case for Shift expressions *)
 
 (* CHANGE: Add function preprocess_prog of type geom_exp -> geom_exp *)
+fun preprocess_prog e = 
+	case e of 
+		LineSegment seg =>
+			let
+				val (x1,y1,x2,y2) = seg
+			in
+				if real_close_point (x1,y1) (x2,y2)
+				then Point (x1, y1)
+				else if real_close(x1, x2) andalso y2 < y1
+				then LineSegment (x2,y2,x1,y1)
+				else if x2 < x1
+				then LineSegment (x2,y2,x1,y1)
+				else LineSegment seg
+			end
+		| _ => e
+
+ 
+
