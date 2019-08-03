@@ -17,6 +17,7 @@ datatype geom_exp =
 	 | VerticalLine of real (* x value *)
 	 | LineSegment of real * real * real * real (* x1,y1 to x2,y2 *)
 	 | Intersect of geom_exp * geom_exp (* intersection expression *)
+	 | Shift of real * real * geom_exp (* shift expression *)
 	 | Let of string * geom_exp * geom_exp (* let s = e1 in e2 *)
 	 | Var of string
 (* CHANGE add shifts for expressions of the form Shift(deltaX, deltaY, exp *)
@@ -182,6 +183,11 @@ fun intersect (v1,v2) =
          * line segments are not actually points (endpoints not real close)
          * lines segment have left (or, if vertical, bottom) coordinate first
 *)
+fun shift (deltaX,deltaY,exp) =
+	case exp of 
+	NoPoints => NoPoints
+	| _ => raise Impossible "Not implemented"
+
 
 fun eval_prog (e,env) =
     case e of
@@ -196,6 +202,7 @@ fun eval_prog (e,env) =
 	   | SOME (_,v) => v)
       | Let(s,e1,e2) => eval_prog (e2, ((s, eval_prog(e1,env)) :: env))
       | Intersect(e1,e2) => intersect(eval_prog(e1,env), eval_prog(e2, env))
+      | Shift(deltaX,deltaY,e) => shift(deltaX, deltaY, eval_prog(e,env))
 (* CHANGE: Add a case for Shift expressions *)
 
 (* CHANGE: Add function preprocess_prog of type geom_exp -> geom_exp *)
