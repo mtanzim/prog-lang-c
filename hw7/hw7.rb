@@ -13,7 +13,7 @@
 #       for being called by intersect of appropriate clases and doing
 #       the correct intersection calculuation
 #   * (We would need intersectNoPoints and intersectLineSegment, but these
-#      are provided by GeometryValue and should not be overridden.)
+#      are provided by GeometryVruby alue and should not be overridden.)
 #   *  intersectWithSegmentAsLineResult, which is used by 
 #      intersectLineSegment as described in the assignment
 #
@@ -60,6 +60,19 @@ class GeometryValue
     np # could also have NoPoints.new here instead
   end
 
+  # default shift behaviour
+  def shift(dx,dy)
+    self # shifting no-points is no-points
+  end
+
+  # default preprocess behaviour
+  def eval_prog env 
+    self # all values evaluate to self
+  end
+  def preprocess_prog
+    self
+  end
+
   # we put this in this class so all subclasses can inhert it:
   # the intersection of self with a LineSegment is computed by
   # first intersecting with the line containing the segment and then
@@ -77,15 +90,13 @@ class NoPoints < GeometryValue
   # However, you *may* move methods from here to a superclass if you wish to
 
   # Note: no initialize method only because there is nothing it needs to do
-  def eval_prog env 
-    self # all values evaluate to self
-  end
-  def preprocess_prog
-    self # no pre-processing to do here
-  end
-  def shift(dx,dy)
-    self # shifting no-points is no-points
-  end
+  # def eval_prog env 
+  #   self # all values evaluate to self
+  # end
+  # def preprocess_prog
+  #   self # no pre-processing to do here
+  # end
+
   def intersect other
     other.intersectNoPoints self # will be NoPoints but follow double-dispatch
   end
@@ -118,6 +129,9 @@ class Point < GeometryValue
     @x = x
     @y = y
   end
+  def shift(dx,dy)
+    Point.new(@x+dx, @y+dy)
+  end
 end
 
 class Line < GeometryValue
@@ -128,6 +142,9 @@ class Line < GeometryValue
     @m = m
     @b = b
   end
+  def shift(dx,dy)
+    Line.new(@m, @b+dy - m*dx)
+  end
 end
 
 class VerticalLine < GeometryValue
@@ -136,6 +153,9 @@ class VerticalLine < GeometryValue
   attr_reader :x
   def initialize x
     @x = x
+  end
+  def shift(dx,dy)
+    VerticalLine.new(@x+dx)
   end
 end
 
@@ -152,6 +172,21 @@ class LineSegment < GeometryValue
     @x2 = x2
     @y2 = y2
   end
+  def preprocess_prog
+    if real_close_point(@x1,@y1,@x2,@y2)
+      Point.new(@x1,@y1)
+    elsif real_close(@x1,@x2) and @y2 < @y1
+      LineSegment.new(@x2,@y2,@x1,@y1)
+    elsif @x2 < @x1
+      LineSegment.new(@x2,@y2,@x1,@y1)
+    else
+      self
+    end
+  end
+  def shift(dx,dy)
+    LineSegment.new(@x1+dx,@y1+dy,@x2+dx,@y2+dy)
+  end
+  
 end
 
 # Note: there is no need for getter methods for the non-value classes
@@ -174,6 +209,20 @@ class Let < GeometryExpression
     @e1 = e1
     @e2 = e2
   end
+  def preprocess_prog
+    Let.new(s, e1.preprocess_prog, e2.preprocess_prog)
+  end
+  def eval_prog env
+    evaled_e1 = @e1.eval_prog(env)
+    # add to the beginning so shadoing is implemented correctly
+    # + operator returns a new array
+    new_env = [@s,evaled_e1] + env
+    @e2.eval_prog(new_env)
+  end
+
+
+
+
 end
 
 class Var < GeometryExpression
@@ -181,6 +230,9 @@ class Var < GeometryExpression
   # override any methods
   def initialize s
     @s = s
+  end
+  def preprocess_prog
+    self
   end
   def eval_prog env # remember: do not change this method
     pr = env.assoc @s
@@ -197,4 +249,11 @@ class Shift < GeometryExpression
     @dy = dy
     @e = e
   end
+  def preprocess_prog
+    Shift.new(@dx,@dy,@e.preprocess_prog)
+  end
+  def eval_prog env
+    @e.shift(@dx,@dy)
+  end
+    
 end
