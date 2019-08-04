@@ -186,7 +186,11 @@ fun intersect (v1,v2) =
 fun shift (deltaX,deltaY,exp) =
 	case exp of 
 	NoPoints => NoPoints
-	| _ => raise Impossible "Not implemented"
+	| Point (x,y) => Point (x+deltaX, y+deltaY)
+	| LineSegment (x1,y1,x2,y2) => LineSegment (x1+deltaX, y1+deltaY,x2+deltaX, y2+deltaY)
+	| Line (m,b) => Line (m, b+deltaY-m*deltaX)
+	| VerticalLine (x) => VerticalLine(x+deltaX)
+	| _ => raise BadProgram "Invalid expression."
 
 
 fun eval_prog (e,env) =
