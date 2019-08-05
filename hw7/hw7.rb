@@ -204,6 +204,22 @@ class VerticalLine < GeometryValue
   def initialize x
     @x = x
   end
+  def intersect other
+    other.intersectVerticalLine self # will be NoPoints but follow double-dispatch
+  end
+  def intersectPoint p
+    p.intersectVerticalLine(self)
+  end
+  def intersectLine line
+    line.intersectVerticalLine(self)
+  end
+  def intersectVerticalLine vline
+    if real_close(vline.x, @x)
+      self
+    else
+      NoPoints.new
+    end
+  end
   def shift(dx,dy)
     VerticalLine.new(@x+dx)
   end

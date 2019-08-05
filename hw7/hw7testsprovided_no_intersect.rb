@@ -111,14 +111,59 @@ c1 = c.shift(THREE,FIVE)
 if not (c1.x == SIX)
 	puts "VerticalLine shift not working properly"
 end
-# c2 = c.intersect(VerticalLine.new(THREE))
-# if not ((c2.is_a? VerticalLine) and c2.x == THREE )
-# 	puts "VerticalLine intersect not working properly"
-# end
-# c3 = c.intersect(VerticalLine.new(FOUR))
-# if not ((c3.is_a? NoPoints))
-# 	puts "VerticalLine intersect not working properly"
-# end
+c2 = c.intersect(VerticalLine.new(THREE))
+if not ((c2.is_a? VerticalLine) and c2.x == THREE )
+	puts "VerticalLine intersect not working properly"
+end
+c3 = c.intersect(VerticalLine.new(FOUR))
+if not ((c3.is_a? NoPoints))
+	puts "VerticalLine intersect not working properly"
+end
+
+# ADDED: test vline against point
+# c: x=3
+c3_vlp = c.intersect(Point.new(THREE,FIVE))
+if not ((c3_vlp.is_a? Point))
+	puts "VerticalLine intersect with Point not working properly"
+end
+if not (c3_vlp.x == THREE and c3_vlp.y == FIVE)
+	puts "VerticalLine intersect with point not working properly"
+end
+c3_vlp_rev = Point.new(THREE,FIVE).intersect(c)
+if not ((c3_vlp_rev.is_a? Point))
+	puts "VerticalLine intersect with Point not working properly"
+end
+if not (c3_vlp_rev.x == THREE and c3_vlp_rev.y == FIVE)
+	puts "VerticalLine intersect with point not working properly"
+end
+c3_vlp_neg = Point.new(ZERO,FIVE).intersect(c)
+if not ((c3_vlp_neg.is_a? NoPoints))
+	puts "VerticalLine intersect with Point not working properly"
+end
+c3_vlp_neg_rev = c.intersect(Point.new(ZERO,FIVE))
+if not ((c3_vlp_neg_rev.is_a? NoPoints))
+	puts "VerticalLine intersect with Point not working properly"
+end
+
+# ADDED: test vline against line
+# c: x=3
+# b: y = 3x + 5
+# intersection: Point(3,14)
+# all lines intersect with vertical lines
+c4_line_vl = c.intersect(b)
+if not ((c4_line_vl.is_a? Point))
+	puts "VerticalLine intersect with Point not working properly"
+end
+if not (c4_line_vl.x == THREE and c4_line_vl.y == TEN+FOUR)
+	puts "VerticalLine intersect with point not working properly"
+end
+c4_line_vl_rev = b.intersect(c)
+if not ((c4_line_vl_rev.is_a? Point))
+	puts "VerticalLine intersect with Point not working properly"
+end
+if not (c4_line_vl_rev.x == THREE and c4_line_vl_rev.y == TEN+FOUR)
+	puts "VerticalLine intersect with point not working properly"
+end
 
 #LineSegment Tests
 d = LineSegment.new(ONE,TWO,-THREE,-FOUR)
