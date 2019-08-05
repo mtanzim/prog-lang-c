@@ -35,15 +35,14 @@ a1 = a.shift(THREE,FIVE)
 if not (a1.x == SIX and a1.y == TEN)
 	puts "Point shift not working properly"
 end
-# a2 = a.intersect(Point.new(THREE,FIVE))
-# if not (a2.x == THREE and a2.y == FIVE)
-# 	puts "Point intersect not working properly"
-# end 
-# a3 = a.intersect(Point.new(FOUR,FIVE))
-# if not (a3.is_a? NoPoints)
-# 	puts "Point intersect not working properly"
-# end
-
+a2 = a.intersect(Point.new(THREE,FIVE))
+if not (a2.x == THREE and a2.y == FIVE)
+	puts "Point intersect not working properly"
+end 
+a3 = a.intersect(Point.new(FOUR,FIVE))
+if not (a3.is_a? NoPoints)
+	puts "Point intersect not working properly"
+end
 #Line Tests
 b = Line.new(THREE,FIVE)
 if not (b.m == THREE and b.b == FIVE)
@@ -61,14 +60,40 @@ if not (b1.m == THREE and b1.b == ONE)
 	puts "Line shift not working properly"
 end
 
-# b2 = b.intersect(Line.new(THREE,FIVE))
-# if not (((b2.is_a? Line)) and b2.m == THREE and b2.b == FIVE)
-# 	puts "Line intersect not working properly"
-# end
-# b3 = b.intersect(Line.new(THREE,FOUR))
-# if not ((b3.is_a? NoPoints))
-# 	puts "Line intersect not working properly"
-# end
+b2 = b.intersect(Line.new(THREE,FIVE))
+if not (((b2.is_a? Line)) and b2.m == THREE and b2.b == FIVE)
+	puts "Line intersect not working properly"
+end
+b3 = b.intersect(Line.new(THREE,FOUR))
+if not ((b3.is_a? NoPoints))
+	puts "Line intersect not working properly"
+end
+
+# ADDED: line point intersect
+# b: y = 3x + 5
+b_lp_a = b.intersect(Point.new(ZERO,FIVE))
+if not ((b_lp_a.is_a? Point))
+	puts "Line intersect with point not working properly"
+end
+if not (b_lp_a.x == ZERO and b_lp_a.y == FIVE)
+	puts "Line intersect with point not working properly"
+end
+b_lp_a_rev = Point.new(ZERO,FIVE).intersect(b)
+if not ((b_lp_a_rev.is_a? Point))
+	puts "Point intersect with Line not working properly"
+end
+if not (b_lp_a_rev.x == ZERO and b_lp_a_rev.y == FIVE)
+	puts "Line intersect with point not working properly"
+end
+
+b_lp_b = Point.new(THREE,FIVE).intersect(b)
+if not ((b_lp_b.is_a? NoPoints))
+	puts "Point intersect with Line not working properly"
+end
+b_lp_b_rev = b.intersect(Point.new(THREE,FIVE))
+if not ((b_lp_b_rev.is_a? NoPoints))
+	puts "Point intersect with Line not working properly"
+end
 
 #VerticalLine Tests
 c = VerticalLine.new(THREE)

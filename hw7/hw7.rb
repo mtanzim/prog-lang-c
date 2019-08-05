@@ -54,12 +54,6 @@ class GeometryValue
   end
 
   public
-  # we put this in this class so all subclasses can inherit it:
-  # the intersection of self with a NoPoints is a NoPoints object
-  def intersectNoPoints np
-    np # could also have NoPoints.new here instead
-  end
-
   # default shift behaviour
   def shift(dx,dy)
     self # shifting no-points is no-points
@@ -73,6 +67,11 @@ class GeometryValue
     self
   end
 
+  # we put this in this class so all subclasses can inherit it:
+  # the intersection of self with a NoPoints is a NoPoints object
+  def intersectNoPoints np
+    np # could also have NoPoints.new here instead
+  end
   # we put this in this class so all subclasses can inhert it:
   # the intersection of self with a LineSegment is computed by
   # first intersecting with the line containing the segment and then
@@ -129,6 +128,31 @@ class Point < GeometryValue
     @x = x
     @y = y
   end
+  def intersect other
+    other.intersectPoint self 
+  end
+  def intersectPoint p
+    if real_close_point(@x,@y,p.x,p.y)
+      self
+    else
+      NoPoints.new
+    end
+  end
+  def intersectLine line
+    if real_close(@y,line.m*@x +line.b)
+      self
+    else
+      NoPoints.new
+    end
+  end
+  def intersectVerticalLine vline
+    if real_close(@x,vline.x)
+      self
+    else
+      NoPoints.new
+    end
+  end
+
   def shift(dx,dy)
     Point.new(@x+dx, @y+dy)
   end
@@ -141,6 +165,32 @@ class Line < GeometryValue
   def initialize(m,b)
     @m = m
     @b = b
+  end
+  def intersect other
+    other.intersectLine self 
+  end
+  def intersectPoint p
+    p.intersectLine(self)
+  end
+  def intersectLine line
+    # same slope
+    if real_close(@m,line.m)
+      # same lines
+      if real_close(@b,line.b)
+        self
+      # parallel lines
+      else
+        NoPoints.new
+      end
+    # point intersection
+    else
+      new_x = (line.b - @b) / (@m - line.m)
+      new_y = @m * new_x + @b
+      Point.new(new_x,new_y)
+    end
+  end
+  def intersectVerticalLine vline
+    Point.new(vline.x, @m*vline.x + @b)
   end
   def shift(dx,dy)
     Line.new(@m, @b+dy - m*dx)
@@ -198,6 +248,13 @@ class Intersect < GeometryExpression
     @e1 = e1
     @e2 = e2
   end
+  def preprocess_prog
+    Intersect.new(@e1.preprocess_prog, @e2.preprocess_prog)
+  end
+  def eval_prog env
+    @e1.eval_prog(env).intersect(e2.eval_prog(env))
+  end
+
 end
 
 class Let < GeometryExpression
