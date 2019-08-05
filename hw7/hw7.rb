@@ -152,7 +152,17 @@ class Point < GeometryValue
       NoPoints.new
     end
   end
-
+  def inbetween (v, end1, end2)
+    (end1 - GeometryExpression::Epsilon <= v and v <= end2 + GeometryExpression::Epsilon) or 
+    (end2 - GeometryExpression::Epsilon <= v and v <= end1 + GeometryExpression::Epsilon)
+  end
+  def intersectWithSegmentAsLineResult seg
+    if inbetween(@x,seg.x1, seg.x2) and inbetween(@y,seg.y1, seg.y2)
+      self
+    else
+      NoPoints.new
+    end
+  end
   def shift(dx,dy)
     Point.new(@x+dx, @y+dy)
   end
@@ -170,7 +180,7 @@ class Line < GeometryValue
     other.intersectLine self 
   end
   def intersectPoint p
-    p.intersectLine(self)
+    p.intersectLine self
   end
   def intersectLine line
     # same slope
@@ -192,6 +202,12 @@ class Line < GeometryValue
   def intersectVerticalLine vline
     Point.new(vline.x, @m*vline.x + @b)
   end
+
+  # already proved line intersects
+  def intersectWithSegmentAsLineResult seg
+    self
+  end
+
   def shift(dx,dy)
     Line.new(@m, @b+dy - m*dx)
   end
@@ -208,10 +224,10 @@ class VerticalLine < GeometryValue
     other.intersectVerticalLine self # will be NoPoints but follow double-dispatch
   end
   def intersectPoint p
-    p.intersectVerticalLine(self)
+    p.intersectVerticalLine self
   end
   def intersectLine line
-    line.intersectVerticalLine(self)
+    line.intersectVerticalLine self 
   end
   def intersectVerticalLine vline
     if real_close(vline.x, @x)
@@ -219,6 +235,10 @@ class VerticalLine < GeometryValue
     else
       NoPoints.new
     end
+  end
+  # already proved line intersects
+  def intersectWithSegmentAsLineResult seg
+    self
   end
   def shift(dx,dy)
     VerticalLine.new(@x+dx)
@@ -238,6 +258,27 @@ class LineSegment < GeometryValue
     @x2 = x2
     @y2 = y2
   end
+  def intersect other
+    other.intersectLineSegment self # will be NoPoints but follow double-dispatch
+  end
+  # check if 
+  def intersectPoint p
+    p.intersectLineSegment self
+  end
+  def intersectLine line
+    line.intersectLineSegment self
+  end
+  def intersectVerticalLine vline
+    vline.intersectLineSegment self
+  end
+
+  # already proved line intersects
+  # hardest case
+  # don't do for now, test the others
+  def intersectWithSegmentAsLineResult seg
+    NoPoints.new
+  end
+
   def preprocess_prog
     if real_close_point(@x1,@y1,@x2,@y2)
       Point.new(@x1,@y1)
