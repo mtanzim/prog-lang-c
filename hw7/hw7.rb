@@ -210,7 +210,7 @@ class Let < GeometryExpression
     @e2 = e2
   end
   def preprocess_prog
-    Let.new(s, e1.preprocess_prog, e2.preprocess_prog)
+    Let.new(@s, @e1.preprocess_prog, @e2.preprocess_prog)
   end
   def eval_prog env
     evaled_e1 = @e1.eval_prog(env)
