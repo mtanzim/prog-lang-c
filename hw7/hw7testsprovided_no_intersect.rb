@@ -70,6 +70,22 @@ end
 
 #Line Tests
 b = Line.new(THREE,FIVE)
+# Line segment test
+b_orig = Line.new(ONE,ZERO)
+b_ls = LineSegment.new(THREE,THREE, FIVE,FIVE)
+l_int_ls = b_orig.intersect(b_ls)
+puts l_int_ls.is_a? Line
+puts l_int_ls.m
+puts l_int_ls.b
+l_int_ls_rev = b_ls.intersect(b_orig)
+puts l_int_ls_rev.is_a? Line
+puts l_int_ls_rev.m
+puts l_int_ls_rev.b
+b_neg = Line.new(THREE,ZERO)
+l_int_ls_neg = b_ls.intersect(b_neg)
+puts l_int_ls_neg.is_a? NoPoints
+
+
 if not (b.m == THREE and b.b == FIVE)
 	puts "Line not initialized properly"
 end
@@ -96,10 +112,6 @@ end
 
 # ADDED: line point intersect
 # b: y = 3x + 5
-# Line segment test
-
-
-
 b_lp_a = b.intersect(Point.new(ZERO,FIVE))
 if not ((b_lp_a.is_a? Point))
 	puts "Line intersect with point not working properly"
