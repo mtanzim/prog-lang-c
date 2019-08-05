@@ -75,13 +75,17 @@ b = Line.new(THREE,FIVE)
 b_orig = Line.new(ONE,ZERO)
 b_ls = LineSegment.new(THREE,THREE, FIVE,FIVE)
 l_int_ls = b_orig.intersect(b_ls)
-puts l_int_ls.is_a? Line
-puts l_int_ls.m
-puts l_int_ls.b
+puts l_int_ls.is_a? LineSegment
+puts l_int_ls.x1
+puts l_int_ls.y1
+puts l_int_ls.x2
+puts l_int_ls.y2
 l_int_ls_rev = b_ls.intersect(b_orig)
-puts l_int_ls_rev.is_a? Line
-puts l_int_ls_rev.m
-puts l_int_ls_rev.b
+puts l_int_ls_rev.is_a? LineSegment
+puts l_int_ls_rev.x1
+puts l_int_ls_rev.y1
+puts l_int_ls_rev.x2
+puts l_int_ls_rev.y2
 b_neg = Line.new(THREE,ZERO)
 l_int_ls_neg = b_ls.intersect(b_neg)
 puts l_int_ls_neg.is_a? NoPoints
@@ -144,14 +148,17 @@ puts "VertLine + LineSeg tests"
 # Line segment tests
 c_ls = LineSegment.new(THREE,THREE, THREE,FIVE)
 c_ls_vl_int = c_ls.intersect(c)
-puts c_ls_vl_int.is_a? VerticalLine
-puts c_ls_vl_int.x
+puts c_ls_vl_int.is_a? LineSegment
+puts c_ls_vl_int.x1
 c_ls_vl_int_rev = c.intersect(c_ls)
-puts c_ls_vl_int_rev.is_a? VerticalLine
-puts c_ls_vl_int_rev.x
+puts c_ls_vl_int_rev.is_a? LineSegment
+puts c_ls_vl_int_rev.x1
 c_ls_vl_int_neg = VerticalLine.new(FOUR).intersect(c_ls)
 puts c_ls_vl_int_neg.is_a? NoPoints
 puts "VertLine + LineSeg tests END"
+puts ""
+puts ""
+puts ""
 
 if not (c.x == THREE)
 	puts "VerticalLine not initialized properly"
@@ -244,21 +251,21 @@ if not (d3.x1 == ZERO and d3.y1 == ONE and d3.x2 == FOUR and d3.y2 == SEVEN)
 	puts "LineSegment shift not working properly"
 end
 
-# d4 = d.intersect(LineSegment.new(-THREE,-FOUR,ONE,TWO))
-# if not (((d4.is_a? LineSegment)) and d4.x1 == -THREE and d4.y1 == -FOUR and d4.x2 == ONE and d4.y2 == TWO)	
-# 	puts "LineSegment intersect not working properly"
-# end
-# d5 = d.intersect(LineSegment.new(TWO,THREE,FOUR,FIVE))
-# if not ((d5.is_a? NoPoints))
-# 	puts "LineSegment intersect not working properly"
-# end
+d4 = d.intersect(LineSegment.new(-THREE,-FOUR,ONE,TWO))
+if not (((d4.is_a? LineSegment)) and d4.x1 == -THREE and d4.y1 == -FOUR and d4.x2 == ONE and d4.y2 == TWO)	
+	puts "LineSegment intersect 1 not working properly"
+end
+d5 = d.intersect(LineSegment.new(TWO,THREE,FOUR,FIVE))
+if not ((d5.is_a? NoPoints))
+	puts "LineSegment intersect 2 not working properly"
+end
 
 #Intersect Tests
-# i = Intersect.new(LineSegment.new(-ONE,-TWO,THREE,FOUR), LineSegment.new(THREE,FOUR,-ONE,-TWO))
-# i1 = i.preprocess_prog.eval_prog([])
-# if not (i1.x1 == -ONE and i1.y1 == -TWO and i1.x2 == THREE and i1.y2 == FOUR)
-# 	puts "Intersect eval_prog should return the intersect between e1 and e2"
-# end
+i = Intersect.new(LineSegment.new(-ONE,-TWO,THREE,FOUR), LineSegment.new(THREE,FOUR,-ONE,-TWO))
+i1 = i.preprocess_prog.eval_prog([])
+if not (i1.x1 == -ONE and i1.y1 == -TWO and i1.x2 == THREE and i1.y2 == FOUR)
+	puts "Intersect eval_prog should return the intersect between e1 and e2"
+end
 
 #Var Tests
 v = Var.new("a")
@@ -271,12 +278,12 @@ if not (v.preprocess_prog == v)
 end
 
 #Let Tests
-# l = Let.new("a", LineSegment.new(-ONE,-TWO,THREE,FOUR),
-#              Intersect.new(Var.new("a"),LineSegment.new(THREE,FOUR,-ONE,-TWO)))
-# l1 = l.preprocess_prog.eval_prog([])
-# if not (l1.x1 == -ONE and l1.y1 == -TWO and l1.x2 == THREE and l1.y2 == FOUR)
-# 	puts "Let eval_prog should evaluate e2 after adding [s, e1] to the environment"
-# end
+l = Let.new("a", LineSegment.new(-ONE,-TWO,THREE,FOUR),
+             Intersect.new(Var.new("a"),LineSegment.new(THREE,FOUR,-ONE,-TWO)))
+l1 = l.preprocess_prog.eval_prog([])
+if not (l1.x1 == -ONE and l1.y1 == -TWO and l1.x2 == THREE and l1.y2 == FOUR)
+	puts "Let eval_prog should evaluate e2 after adding [s, e1] to the environment"
+end
 
 #Let Variable Shadowing Test
 # l2 = Let.new("a", LineSegment.new(-ONE, -TWO, THREE, FOUR),

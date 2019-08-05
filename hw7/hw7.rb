@@ -205,7 +205,7 @@ class Line < GeometryValue
 
   # already proved line intersects
   def intersectWithSegmentAsLineResult seg
-    self
+    seg
   end
 
   def shift(dx,dy)
@@ -238,7 +238,7 @@ class VerticalLine < GeometryValue
   end
   # already proved line intersects
   def intersectWithSegmentAsLineResult seg
-    self
+    seg
   end
   def shift(dx,dy)
     VerticalLine.new(@x+dx)
@@ -276,7 +276,69 @@ class LineSegment < GeometryValue
   # hardest case
   # don't do for now, test the others
   def intersectWithSegmentAsLineResult seg
-    NoPoints.new
+    # seg is on a vertical line
+    # this is super error prone
+    if real_close(@x1,@x2)
+      if @y1 < seg.y1
+        aXstart = @x1
+        aYstart = @y1
+        aXend = @x2
+        aYend = @y2
+        bXstart = seg.x1
+        bYstart = seg.y1
+        bXend = seg.x2
+        bYend = seg.y2
+      else
+        bXstart = @x1
+        bYstart = @y1
+        bXend = @x2
+        bYend = @y2
+        aXstart = seg.x1
+        aYstart = seg.y1
+        aXend = seg.x2
+        aYend = seg.y2
+      end
+      if real_close(aYend,bYstart)
+        Point.new(aXend,aYend)
+      elsif aYend < bYstart
+        NoPoints.new
+      elsif aYend > bYend
+        LineSegment.new(bXstart,bYstart,bXend,bYend)
+      else
+        LineSegment.new(bXstart,bYstart,aXend,aYend)
+      end
+    else
+      if @x1 < seg.x1
+        aXstart = @x1
+        aYstart = @y1
+        aXend = @x2
+        aYend = @y2
+        bXstart = seg.x1
+        bYstart = seg.y1
+        bXend = seg.x2
+        bYend = seg.y2
+      else
+        bXstart = @x1
+        bYstart = @y1
+        bXend = @x2
+        bYend = @y2
+        aXstart = seg.x1
+        aYstart = seg.y1
+        aXend = seg.x2
+        aYend = seg.y2
+      end
+      if real_close(aXend,bXstart)
+        Point.new(aXend,aYend)
+      elsif aXend < bXstart
+        NoPoints.new
+      elsif aXend > bXend
+        LineSegment.new(bXstart,bYstart,bXend,bYend)
+      else
+        LineSegment.new(bXstart,bYstart,aXend,aYend)
+      end
+
+    end
+
   end
 
   def preprocess_prog
@@ -309,7 +371,7 @@ class Intersect < GeometryExpression
     Intersect.new(@e1.preprocess_prog, @e2.preprocess_prog)
   end
   def eval_prog env
-    @e1.eval_prog(env).intersect(e2.eval_prog(env))
+    @e1.eval_prog(env).intersect(@e2.eval_prog(env))
   end
 
 end
