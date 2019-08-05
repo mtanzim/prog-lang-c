@@ -392,7 +392,13 @@ class Let < GeometryExpression
     evaled_e1 = @e1.eval_prog(env)
     # add to the beginning so shadoing is implemented correctly
     # + operator returns a new array
-    new_env = [@s,evaled_e1] + env
+    new_env = [[@s,evaled_e1]] + env
+    # env.each {|item| puts item}
+    # puts evaled_e1
+    # puts @s
+    # puts env
+    # puts new_env[0][0]
+    # puts new_env[0][1]
     @e2.eval_prog(new_env)
   end
 
