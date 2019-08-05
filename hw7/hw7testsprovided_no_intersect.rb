@@ -69,6 +69,7 @@ end
 
 
 #Line Tests
+puts "Line + LineSeg tests"
 b = Line.new(THREE,FIVE)
 # Line segment test
 b_orig = Line.new(ONE,ZERO)
@@ -84,6 +85,7 @@ puts l_int_ls_rev.b
 b_neg = Line.new(THREE,ZERO)
 l_int_ls_neg = b_ls.intersect(b_neg)
 puts l_int_ls_neg.is_a? NoPoints
+puts "Line + LineSeg tests END"
 
 
 if not (b.m == THREE and b.b == FIVE)
@@ -138,6 +140,19 @@ end
 
 #VerticalLine Tests
 c = VerticalLine.new(THREE)
+puts "VertLine + LineSeg tests"
+# Line segment tests
+c_ls = LineSegment.new(THREE,THREE, THREE,FIVE)
+c_ls_vl_int = c_ls.intersect(c)
+puts c_ls_vl_int.is_a? VerticalLine
+puts c_ls_vl_int.x
+c_ls_vl_int_rev = c.intersect(c_ls)
+puts c_ls_vl_int_rev.is_a? VerticalLine
+puts c_ls_vl_int_rev.x
+c_ls_vl_int_neg = VerticalLine.new(FOUR).intersect(c_ls)
+puts c_ls_vl_int_neg.is_a? NoPoints
+puts "VertLine + LineSeg tests END"
+
 if not (c.x == THREE)
 	puts "VerticalLine not initialized properly"
 end
