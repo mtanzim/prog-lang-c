@@ -388,6 +388,10 @@ class Let < GeometryExpression
   def preprocess_prog
     Let.new(@s, @e1.preprocess_prog, @e2.preprocess_prog)
   end
+  # default shift behaviour
+  def shift(dx,dy)
+    self # shifting no-points is no-points
+  end
   def eval_prog env
     evaled_e1 = @e1.eval_prog(env)
     # add to the beginning so shadoing is implemented correctly
@@ -413,6 +417,10 @@ class Var < GeometryExpression
   def initialize s
     @s = s
   end
+  # default shift behaviour
+  def shift(dx,dy)
+    self # shifting no-points is no-points
+  end
   def preprocess_prog
     self
   end
@@ -430,6 +438,10 @@ class Shift < GeometryExpression
     @dx = dx
     @dy = dy
     @e = e
+  end
+  # default shift behaviour
+  def shift(dx,dy)
+    self # shifting no-points is no-points
   end
   def preprocess_prog
     Shift.new(@dx,@dy,@e.preprocess_prog)
