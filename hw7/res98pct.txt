@@ -1,0 +1,7 @@
+Shift#eval_prog: Shift.new(-3.0,3.0,Var.new("x")) should evaluate to LineSegment.new(-1.0,5.0,1.0,7.0) given env==[["x", LineSegment.new(2.0,2.0,4.0,4.0)]] (actual: Var.new("x")) [incorrect answer] [FIXED]
+
+Shift#eval_prog: Shift.new(-3.0,3.0,Shift.new(0.3,-0.2,LineSegment.new(1.7,2.2,3.7,4.2))) should evaluate to LineSegment.new(-1.0,5.0,1.0,7.0) given env==[] (actual: Shift.new(0.3,-0.2,LineSegment.new(1.7,2.2,3.7,4.2))) [incorrect answer] [FIXED]
+
+Shift#eval_prog: Shift.new(-3.0,3.0,Let.new("x",LineSegment.new(1.7,2.2,3.7,4.2),Shift.new(0.3,-0.2,Var.new("x")))) should evaluate to LineSegment.new(-1.0,5.0,1.0,7.0) given env==[] (actual: Let.new("x",LineSegment.new(1.7,2.2,3.7,4.2),Shift.new(0.3,-0.2,Var.new("x")))) [incorrect answer] [FIXED]
+
+Because the auto-grader gave a score above 60, here is the link to a message from a very cute dog: https://drive.google.com/file/d/0B5sUgbs6aDNpSXBkMVZmelJJX1U/view?pref=2&pli=1
