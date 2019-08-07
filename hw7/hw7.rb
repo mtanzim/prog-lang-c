@@ -344,9 +344,9 @@ class LineSegment < GeometryValue
   def preprocess_prog
     if real_close_point(@x1,@y1,@x2,@y2)
       Point.new(@x1,@y1)
-    elsif real_close(@x1,@x2) and @y2 < @y1
+    elsif real_close(@x1,@x2) and @y2 < @y1 and not real_close(@y1,@y2)
       LineSegment.new(@x2,@y2,@x1,@y1)
-    elsif @x2 < @x1
+    elsif @x2 < @x1 and not real_close(@x1,@x2)
       LineSegment.new(@x2,@y2,@x1,@y1)
     else
       self
